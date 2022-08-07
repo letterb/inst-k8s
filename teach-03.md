@@ -1,14 +1,16 @@
 # 3.创建k8s集群 2022-08-06
 
-## 前提条件：每天机器已经设置好网络。并且内网可`ping`通。此教程不涉及网络设置
+## 前提条件：每台机器已经设置好网络。并且内网可`ping`通。此教程不涉及网络设置
 ## 使用的是：CentOS-7-x86_64-Minimal-2009.iso
-## 安装的是版本是k8s-v1.23.9 , docker-ce-v20.10
+## 安装的是版本是k8s-v1.23.9 , docker-ce-v20.10[docker是默认安装，教程中未指定版本]
+
 ***
 
 ## `在master服务器执行`
 
 ### 以下是`kubeadm`的初始化自动化脚本`kubeadm_init.sh`
 #### 新建`kubeadm_init.sh`，然后修改为可执行
+#### 注意：下面的`--apiserver-advertise-address=192.168.216.10`参数的IP地址改成自己对应的地址
 ```shell
 # 新建文件
 touch kubeadm_init.sh
@@ -94,11 +96,16 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-#### 并且记下加入节点加入集群的`token`。如果没记下不要紧，后面可以再生成
+#### 并且记下加入节点加入集群的`token`
 ```shell
 # 命令以及token
 kubeadm join 192.168.216.11:6443 --token 84lnde.auurvv324oghnfat \
 	--discovery-token-ca-cert-hash sha256:ed487d1c133d55deda215d212d363c90718eaf6a517bbb691659ca004c04988b
+```
+
+#### 如果没记下或者没有显示`token`，用以下命令生成
+```shell
+kubeadm token create --print-join-command
 ```
 
 ***
@@ -126,14 +133,14 @@ chmod 777 apply_calico.sh
 #### 复制以下脚本到`apply_calico.sh`
 ```shell
 # 运行calico.yaml
-kubectl apply -f calico.yaml
+kubectl apply -f calico.yaml &&
 
 # 去掉主节点上面不可调度pod污点。下面的k8s-master01替换成自己的hostname
-kubectl describe node k8s-master01
-kubectl taint nodes --all node-role.kubernetes.io/control-plane:NoSchedule
+kubectl describe node k8s-master01 &&
+kubectl taint nodes --all node-role.kubernetes.io/control-plane:NoSchedule &&
 
 # 查看kube-system命名空间下的所有pod
-kubectl get pod -n kube-system 
+kubectl get pod -n kube-system &&
 
 # 查看所有节点情况
 kubectl get nodes
@@ -145,6 +152,7 @@ kubectl get nodes
 ```
 
 #### 执行以上的脚本后，显示以下信息即表示`master`节点成功运行。后期其他节点就可以加进来了
+#### 如果没显示为`Ready`状态先等一会，让`k8s`把所有服务全部启动来。大概等个`30`秒就可以
 ```shell
 # 显示为Ready状态即表示已经启动且正常运行
 [root@k8s-master01 home]# kubectl get nodes

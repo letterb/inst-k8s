@@ -1,8 +1,9 @@
 # 2.部署k8s
 
-## 前提条件：每天机器已经设置好网络。并且内网可`ping`通。此教程不涉及网络设置
+## 前提条件：每台机器已经设置好网络。并且内网可`ping`通。此教程不涉及网络设置
 ## 使用的是：CentOS-7-x86_64-Minimal-2009.iso
-## 安装的是版本是k8s-v1.23.9 , docker-ce-v20.10
+## 安装的是版本是k8s-v1.23.9 , docker-ce-v20.10[docker是默认安装，教程中未指定版本
+
 ***
 
 ## 每台机器都要执行
@@ -332,7 +333,11 @@ gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg
 http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
 EOF
 ## 指定版本安装
-yum install kubeadm-1.23.9 kubectl-1.23.9 kubelet-1.23.9 -y
+yum install kubeadm-1.23.9 kubectl-1.23.9 kubelet-1.23.9 -y &&
+
+## 开机启动kubelet和现在启动kubelet
+systemctl enable kubelet && systemctl start kubelet
+
 ```
 
 ## 以上就是自动化脚本。全部安装后，手动修改k8s的配置

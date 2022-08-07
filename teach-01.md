@@ -1,8 +1,8 @@
 # 1.安装k8s前准备
 
-## 前提条件：每天机器已经设置好网络。并且内网可`ping`通。此教程不涉及网络设置
+## 前提条件：每台机器已经设置好网络。并且内网可`ping`通。此教程不涉及网络设置
 ## 使用的是：CentOS-7-x86_64-Minimal-2009.iso
-## 安装的是版本是k8s-v1.23.9 , docker-ce-v20.10
+## 安装的是版本是k8s-v1.23.9 , docker-ce-v20.10[docker是默认安装，教程中未指定版本]
 
 ***
 
@@ -134,13 +134,13 @@ rpm -qa | grep kernel
 ### 升级内核工具包
 ```shell
 # 删除旧版本工具包--可选
-yum remove kernel-3.10.0-1160.el7.x86_64 &&
-kernel-tools-libs-3.10.0-1160.71.1.el7.x86_64 &&
-kernel-3.10.0-1160.71.1.el7.x86_64 &&
-kernel-tools-3.10.0-1160.71.1.el7.x86_64
+yum remove kernel-3.10.0-1160.el7.x86_64 -y &&
+yum remove kernel-tools-libs-3.10.0-1160.71.1.el7.x86_64 -y &&
+yum remove kernel-3.10.0-1160.71.1.el7.x86_64 -y &&
+yum remove kernel-tools-3.10.0-1160.71.1.el7.x86_64 -y &&
 
 # 安装新版本工具包
-yum --disablerepo=\* --enablerepo=elrepo-kernel install -y kernel-lt-tools.x86_64
+yum --disablerepo=\* --enablerepo=elrepo-kernel install -y kernel-lt-tools.x86_64 &&
 
 # 查看已安装内核
 rpm -qa | grep kernel
