@@ -73,14 +73,21 @@ chmod 777 update_kernel.sh
 #更新yum源仓库
 yum -y update &&
 
+set +e
+
 #载入ELRepo仓库的公共密钥
 rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org &&
 
 #安装ELRepo仓库的yum源
 yum install -y https://www.elrepo.org/elrepo-release-7.el7.elrepo.noarch.rpm &&
 
+
+set +e
+
 # 或升级
 rpm -Uvh https://www.elrepo.org/elrepo-release-7.el7.elrepo.noarch.rpm &&
+
+set +e
 
 # 安装长期维护版本kernel-lt  如需更新最新稳定版选择kernel-ml
 yum  --enablerepo=elrepo-kernel  install  -y  kernel-lt &&
