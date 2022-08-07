@@ -78,9 +78,10 @@ set +e
 #载入ELRepo仓库的公共密钥
 rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org &&
 
+set +e
+
 #安装ELRepo仓库的yum源
 yum install -y https://www.elrepo.org/elrepo-release-7.el7.elrepo.noarch.rpm &&
-
 
 set +e
 
